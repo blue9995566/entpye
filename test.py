@@ -9,3 +9,6 @@ def newposition():
     return a
 
 print int(round(1.9))
+
+needtokill=[]
+print len(needtokill)

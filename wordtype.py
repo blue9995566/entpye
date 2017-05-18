@@ -56,7 +56,7 @@ class myThread (threading.Thread):
         global words
         global positions
         while not self.shutdown_flag.is_set():
-            print time.time()
+            #print time.time()
             positions=[]
             for x in range(2):
                 words.append(a_word())
@@ -83,7 +83,7 @@ def run():
     heart=3
     words=[]
     print words
-    FPS=50
+    FPS=30
     word_input= ""
     start=time.time()
     while True and heart>0:
@@ -93,7 +93,10 @@ def run():
         input_text= font.render(word_input, True, blue)
         message= "Grade:{}".format(grade)
         text = font.render(message, True, red)
-        heartimg=pygame.image.load("img/{}heart.png".format(heart))
+        #heartimg=pygame.image.load("img/{}heart.png".format(heart))
+        keys = pygame.key.get_pressed() 
+        if keys[K_BACKSPACE]:
+            word_input = word_input[:-1]
         for event in pygame.event.get():
             #print event
             if event.type == QUIT:
@@ -101,32 +104,33 @@ def run():
                 thread1.join()
                 exit()
             if event.type == KEYDOWN:
-                same=0
+                needtokill=[]
                 if event.key == K_ESCAPE:
                     thread1.shutdown_flag.set()
                     thread1.join()
                     exit()
                 elif event.key == K_BACKSPACE:
-                        word_input = word_input[:-1]
+                    pass
                 elif event.key == K_RETURN:
                     for word in words:
                         if word.word==word_input:
                             shoot_sound.play()
                             grade+=1
-                            del words[words.index(word)]
-                            same +=1
-                    if same==0:
+                            needtokill.append(words.index(word))
+                    if len(needtokill)==0:
                         boom_sound.play()
+                    else:
+                        for x in range(len(needtokill)):
+                            del words[needtokill[len(needtokill)-x-1]]
                     word_input=""
                 else:
                     word_input+=pygame.key.name(event.key)
-                
 
         #screen.fill(white)
         screen.blit(bg, (0,0))
         screen.blit(input_text, (0, size[1]-text.get_height()))
         screen.blit(text, (size[0]-text.get_width(),0))
-        screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
+        #screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
         for word in words:
             if word.x >= size[0]:
                 heart-=1
@@ -136,13 +140,13 @@ def run():
                 del words[words.index(word)]
             else:
                 word.draw()
-                word.x+=2
+                word.x+=4
         clock.tick(FPS)
         pygame.display.update()
     end = time.time()
     wpm=int(round(grade/(end-start)*60))
-    heartimg=pygame.image.load("img/{}heart.png".format(heart))
-    screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
+    #heartimg=pygame.image.load("img/{}heart.png".format(heart))
+    #screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
     pygame.display.update()
     thread1.shutdown_flag.set()
     #thread1.join()
