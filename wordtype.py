@@ -93,7 +93,7 @@ def run():
         input_text= font.render(word_input, True, blue)
         message= "Grade:{}".format(grade)
         text = font.render(message, True, red)
-        #heartimg=pygame.image.load("img/{}heart.png".format(heart))
+        heartimg=pygame.image.load("img/{}heart.png".format(heart))
         keys = pygame.key.get_pressed() 
         if keys[K_BACKSPACE]:
             word_input = word_input[:-1]
@@ -130,7 +130,7 @@ def run():
         screen.blit(bg, (0,0))
         screen.blit(input_text, (0, size[1]-text.get_height()))
         screen.blit(text, (size[0]-text.get_width(),0))
-        #screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
+        screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
         for word in words:
             if word.x >= size[0]:
                 heart-=1
@@ -145,8 +145,8 @@ def run():
         pygame.display.update()
     end = time.time()
     wpm=int(round(grade/(end-start)*60))
-    #heartimg=pygame.image.load("img/{}heart.png".format(heart))
-    #screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
+    heartimg=pygame.image.load("img/{}heart.png".format(heart))
+    screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
     pygame.display.update()
     thread1.shutdown_flag.set()
     #thread1.join()
