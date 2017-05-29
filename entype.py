@@ -23,14 +23,7 @@ grade=0
 message= "Grade:{}".format(grade)
 font = pygame.font.SysFont('Comic Sans MS', 50)
 text = font.render(message, True, red)
-positions=[]
-def newposition():
-    if len(deck)<52:
-        a=(random.choice(suit),random.randint(1,13))
-        while a in positions:
-            a=(random.choice(suit),random.randint(1,13))
-        deck.append(a)
-        return a
+
 
 class ball:
     def __init__(self):

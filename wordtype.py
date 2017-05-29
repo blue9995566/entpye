@@ -58,7 +58,7 @@ class myThread (threading.Thread):
         while not self.shutdown_flag.is_set():
             #print time.time()
             positions=[]
-            for x in range(2):
+            for x in range(1):
                 words.append(a_word())
             time.sleep(self.counter)
 
