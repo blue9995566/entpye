@@ -17,7 +17,11 @@ import os
 
 from PIL import Image, ImageTk
 
-TITLE_FONT = ("Helvetica", 18, "bold")
+TITLE_FONT = ("Helvetica", 24, "bold")
+BTN_FONT = ("Helvetica", 18, "bold")
+Entry_FONT = ("Helvetica", 15)
+Listbox_FONT = ("Helvetica", 20)
+
 HOST="140.120.57.34"
 #HOST="localhost"
 
@@ -33,83 +37,6 @@ letters=["a","b","c","d","e","f","g","h","i","j","k","l"\
 imgs=["ball1.png","ball2.png","ball3.png","ball4.png","ball5.png","ball6.png"]
 
 import threading
-
-class SampleApp(tk.Tk):
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-        # the container is where we'll stack a bunch of frames
-        # on top of each other, then the one we want visible
-        # will be raised above the others
-        container = tk.Frame(self)
-
-        """image = Image.open('img/bg.jpg')
-        photo_image = ImageTk.PhotoImage(image)
-        label = tk.Label(container, image = photo_image)
-        label.place(x=0, y=0, relwidth=1, relheight=1)"""
-
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-
-        self.frames = {}
-        for F in (StartPage, RegistPage, Menu,gamepage,letterpage,person,person_letter,person_word,topten,topten_letter,topten_word,wordspage,wordpage):
-            page_name = F.__name__
-            frame = F(container, self)
-            self.frames[page_name] = frame
-
-            # put all of the pages in the same location;
-            # the one on the top of the stacking order
-            # will be the one that is visible.
-            frame.grid(row=0, column=0, sticky="nsew")
-
-        self.show_frame("StartPage")
-        #self.show_frame("letterpage")
-
-    def show_frame(self, page_name):
-        '''Show a frame for the given page name'''
-        frame = self.frames[page_name]
-        frame.tkraise()
-
-class StartPage(tk.Frame):
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-
-        label = tk.Label(self, text="This is the start page", font=TITLE_FONT)
-        #label.grid(row=0,columnspan=4)
-        label.place(x=400, y=200, anchor=CENTER)
-
-        account_label = tk.Label(self, text="Account:", font=TITLE_FONT)
-        #account_label.grid(row=1,column=0,columnspan=2)
-        account_label.place(x=300, y=250, anchor=CENTER)
-
-        self.nameEntry = Entry(self)
-        self.nameEntry.grid(row=1,column=3)
-        self.nameEntry.place(x=450, y=250, anchor=CENTER)
-
-        pwd_label = tk.Label(self, text="Password:", font=TITLE_FONT)
-        pwd_label.grid(row=2,column=0,columnspan=2)
-        pwd_label.place(x=300, y=300, anchor=CENTER)
-
-        self.passEntry = Entry(self, show='*')
-        self.passEntry.grid(row=2,column=3)
-        self.passEntry.place(x=450, y=300, anchor=CENTER)
-
-        button1 = tk.Button(self, text="regist",
-                            command=lambda: controller.show_frame("RegistPage"))
-        button1.place(x=300, y=350, anchor=CENTER)
-        #button1.grid(row=3,column=0,columnspan=2)
-        button2 = tk.Button(self, text="Login",command=self.login)
-        button2.place(x=450, y=350, anchor=CENTER)
-        #button2.grid(row=3,column=3)
-    def login(self):
-        if self.nameEntry.get()!='' and self.passEntry.get()!='':
-            DBlogin(self.nameEntry.get(),self.passEntry.get())
-            if login_id!=0:
-                self.controller.show_frame("Menu")
-        else:
-            tkMessageBox.showinfo( "Fail to regist", "Please check the form!")
 
 def DBlogin(name,pwd):
     try:
@@ -184,7 +111,7 @@ def DBinsert(name,pwd):
         cursor.execute(check_sql)
         results = cursor.fetchall()
         if len(results)!=0:
-            tkMessageBox.showinfo( "Fail to regist", "This account has been registed!")
+            tkMessageBox.showinfo( "Fail to regist", "此帳號已被註冊!")
         else:
             insert_sql = "INSERT INTO user (id, account, password) VALUES (NULL, \'%s\', \'%s\');"% (name,pwd)
             #sql = "INSERT INTO user (id, account, password) VALUES (NULL, '123','456')"
@@ -192,7 +119,7 @@ def DBinsert(name,pwd):
             cursor = db.cursor()
             cursor.execute(insert_sql)
             db.commit()
-            tkMessageBox.showinfo( "Successfully", "Regist successfully!")
+            tkMessageBox.showinfo( "Successfully", "註冊成功，請回上一頁進行登入!")
         # 關閉連線
         db.close()
 
@@ -215,39 +142,120 @@ def record_insert(uid,grade,typee):
         print "Error %d: %s" % (e.args[0], e.args[1])
         tkMessageBox.showinfo( "Fail to connect", "Please check connection!")
 
+class SampleApp(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        # the container is where we'll stack a bunch of frames
+        # on top of each other, then the one we want visible
+        # will be raised above the others
+        container = tk.Frame(self)
+
+        """image = Image.open('img/bg.jpg')
+        photo_image = ImageTk.PhotoImage(image)
+        label = tk.Label(container, image = photo_image)
+        label.place(x=0, y=0, relwidth=1, relheight=1)"""
+
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1)
+
+        self.frames = {}
+        for F in (StartPage, RegistPage, Menu,gamepage,letterpage,person,person_letter,person_word,topten,topten_letter,topten_word,wordspage,wordpage):
+            page_name = F.__name__
+            frame = F(container, self)
+            self.frames[page_name] = frame
+
+            # put all of the pages in the same location;
+            # the one on the top of the stacking order
+            # will be the one that is visible.
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame("StartPage")
+        #self.show_frame("letterpage")
+
+    def show_frame(self, page_name):
+        '''Show a frame for the given page name'''
+        frame = self.frames[page_name]
+        frame.tkraise()
+
+class StartPage(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+        label = tk.Label(self, text="登入頁面", font=TITLE_FONT)
+        #label.grid(row=0,columnspan=4)
+        label.place(x=400, y=200, anchor=CENTER)
+
+        account_label = tk.Label(self, text="帳號:", font=TITLE_FONT)
+        #account_label.grid(row=1,column=0,columnspan=2)
+        account_label.place(x=300, y=250, anchor=CENTER)
+
+        self.nameEntry = Entry(self, font=Entry_FONT)
+        self.nameEntry.grid(row=1,column=3)
+        self.nameEntry.place(x=450, y=250, anchor=CENTER)
+
+        pwd_label = tk.Label(self, text="密碼:", font=TITLE_FONT)
+        pwd_label.grid(row=2,column=0,columnspan=2)
+        pwd_label.place(x=300, y=300, anchor=CENTER)
+
+        self.passEntry = Entry(self, show='*', font=Entry_FONT)
+        self.passEntry.grid(row=2,column=3)
+        self.passEntry.place(x=450, y=300, anchor=CENTER)
+
+        button1 = tk.Button(self, text="註冊",
+                            command=lambda: controller.show_frame("RegistPage"),font=BTN_FONT)
+        button1.place(x=300, y=350, anchor=CENTER)
+        #button1.grid(row=3,column=0,columnspan=2)
+        button2 = tk.Button(self, text="登入",command=self.login,font=BTN_FONT)
+        button2.place(x=450, y=350, anchor=CENTER)
+        #button2.grid(row=3,column=3)
+    def login(self):
+        if self.nameEntry.get()!='' and self.passEntry.get()!='':
+            DBlogin(self.nameEntry.get(),self.passEntry.get())
+            if login_id!=0:
+                self.passEntry.delete(0, 'end')
+                self.nameEntry.delete(0, 'end')
+                self.controller.show_frame("Menu")
+        else:
+            tkMessageBox.showinfo( "Fail to regist", "請填帳號密碼!")
+
 class RegistPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="This is register page", font=TITLE_FONT)
+        label = tk.Label(self, text="註冊頁面", font=TITLE_FONT)
         label.place(x=400, y=200, anchor=CENTER)
         
-        account_label = tk.Label(self, text="Account:", font=TITLE_FONT)
+        account_label = tk.Label(self, text="帳號:", font=TITLE_FONT)
         account_label.place(x=300, y=250, anchor=CENTER)
 
-        self.nameEntry = Entry(self)
+        self.nameEntry = Entry(self, font=Entry_FONT)
         self.nameEntry.place(x=450, y=250, anchor=CENTER)
 
 
-        pwd_label = tk.Label(self, text="Password:", font=TITLE_FONT)
+        pwd_label = tk.Label(self, text="密碼:", font=TITLE_FONT)
         pwd_label.place(x=300, y=300, anchor=CENTER)
 
-        self.passEntry = Entry(self, show='*')
+        self.passEntry = Entry(self, show='*', font=Entry_FONT)
         self.passEntry.place(x=450, y=300, anchor=CENTER)
 
-        B = tk.Button(self, text ="regist", command = self.helloCallBack,fg="blue")
-        B.place(x=300, y=350, anchor=CENTER)
+        button = tk.Button(self, text="上一頁",
+                           command=lambda: controller.show_frame("StartPage"), font=BTN_FONT)
+        button.place(x=300, y=350, anchor=CENTER)
 
-        button = tk.Button(self, text="Go to the start page",
-                           command=lambda: controller.show_frame("StartPage"))
-        button.place(x=450, y=350, anchor=CENTER)
+        B = tk.Button(self, text ="註冊", command = self.helloCallBack,fg="blue", font=BTN_FONT)
+        B.place(x=450, y=350, anchor=CENTER)
 
     def helloCallBack(self):
         if self.nameEntry.get()!='' and self.passEntry.get()!='':
             DBinsert(self.nameEntry.get(),self.passEntry.get())
+            self.passEntry.delete(0, 'end')
+            self.nameEntry.delete(0, 'end')
         else:
-            tkMessageBox.showinfo( "Fail to regist", "Please check the form!")
+            tkMessageBox.showinfo( "Fail to regist", "請填帳號密碼!")
 
 class Menu(tk.Frame):
     def __init__(self, parent, controller):
@@ -260,21 +268,21 @@ class Menu(tk.Frame):
         #label.grid(row=0,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
 
-        button = tk.Button(self, text="開始",command=lambda:controller.show_frame("gamepage"))
+        button = tk.Button(self, text="開始",command=lambda:controller.show_frame("gamepage"), font=BTN_FONT)
         #button.grid(row=1,columnspan=4)
-        button.place(x=400, y=250, anchor=CENTER)
+        button.place(x=400, y=275, anchor=CENTER)
 
-        button = tk.Button(self, text="個人紀錄",command=lambda:controller.show_frame("person"))
-        #button.grid(row=1,columnspan=4)
-        button.place(x=400, y=300, anchor=CENTER)
-
-        button = tk.Button(self, text="排行榜",command=lambda:controller.show_frame("topten"))
+        button = tk.Button(self, text="個人紀錄",command=lambda:controller.show_frame("person"), font=BTN_FONT)
         #button.grid(row=1,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
-        button = tk.Button(self, text="登出",command=self.logout)
+        button = tk.Button(self, text="排行榜",command=lambda:controller.show_frame("topten"), font=BTN_FONT)
+        #button.grid(row=1,columnspan=4)
+        button.place(x=400, y=425, anchor=CENTER)
+
+        button = tk.Button(self, text="登出",command=self.logout, font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=500, y=350, anchor=CENTER)
+        button.place(x=500, y=425, anchor=CENTER)
     def logout(self):
         global login_id
         login_id=0
@@ -287,18 +295,18 @@ class gamepage(tk.Frame):
         label = tk.Label(self, text="選擇模式", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=250, anchor=CENTER)
-        button = tk.Button(self, text="字母",command=self.goletter)
+        button = tk.Button(self, text="字母",command=self.goletter, font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=400, y=300, anchor=CENTER)
+        button.place(x=400, y=325, anchor=CENTER)
 
-        button = tk.Button(self, text="單字",command=lambda:controller.show_frame("wordspage"))
+        button = tk.Button(self, text="單字",command=lambda:controller.show_frame("wordspage"), font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=400, y=350, anchor=CENTER)
+        button.place(x=400, y=400, anchor=CENTER)
 
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"))
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"), font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=500, y=400, anchor=CENTER)
+        button.place(x=500, y=475, anchor=CENTER)
     def goletter(self):
         self.controller.show_frame("letterpage")
         app.frames['letterpage'].run()
@@ -307,20 +315,20 @@ class person(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="選擇模式", font=TITLE_FONT)
+        label = tk.Label(self, text="個人紀錄", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
-        label.place(x=400, y=250, anchor=CENTER)
-        button = tk.Button(self, text="字母",command=self.show_preson_letter)
+        label.place(x=400, y=200, anchor=CENTER)
+        button = tk.Button(self, text="字母",command=self.show_preson_letter, font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=400, y=300, anchor=CENTER)
+        button.place(x=400, y=275, anchor=CENTER)
 
-        button = tk.Button(self, text="單字",command=self.show_preson_word)
+        button = tk.Button(self, text="單字",command=self.show_preson_word, font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"))
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"), font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=500, y=400, anchor=CENTER)
+        button.place(x=500, y=425, anchor=CENTER)
     def show_preson_letter(self):
         person_record(login_id,1,app.frames['person_letter'].L)
         self.controller.show_frame("person_letter")
@@ -336,10 +344,10 @@ class person_letter(tk.Frame):
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
 
-        self.L=Listbox(self,width=50, height=20)
+        self.L=Listbox(self,width=30, height=10, font=Listbox_FONT)
         self.L.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("person"))
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("person"), font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
@@ -351,10 +359,10 @@ class person_word(tk.Frame):
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
 
-        self.L=Listbox(self,width=50, height=20)
+        self.L=Listbox(self,width=30, height=10, font=Listbox_FONT)
         self.L.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("person"))
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("person"), font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
@@ -362,20 +370,20 @@ class topten(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="排行榜，選擇模式", font=TITLE_FONT)
+        label = tk.Label(self, text="排行榜", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
-        label.place(x=400, y=250, anchor=CENTER)
-        button = tk.Button(self, text="字母",command=self.show_topten_letter)
+        label.place(x=400, y=200, anchor=CENTER)
+        button = tk.Button(self, text="字母",command=self.show_topten_letter, font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=400, y=300, anchor=CENTER)
+        button.place(x=400, y=275, anchor=CENTER)
 
-        button = tk.Button(self, text="單字",command=self.show_topten_word)
+        button = tk.Button(self, text="單字",command=self.show_topten_word, font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"))
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"), font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=500, y=400, anchor=CENTER)
+        button.place(x=500, y=425, anchor=CENTER)
     def show_topten_letter(self):
         top_record(1,app.frames['topten_letter'].L)
         self.controller.show_frame("topten_letter")
@@ -391,10 +399,10 @@ class topten_letter(tk.Frame):
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
 
-        self.L=Listbox(self,width=50, height=20)
+        self.L=Listbox(self,width=30, height=10, font=Listbox_FONT)
         self.L.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("topten"))
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("topten"), font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
@@ -406,10 +414,10 @@ class topten_word(tk.Frame):
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
 
-        self.L=Listbox(self,width=50, height=20)
+        self.L=Listbox(self,width=30, height=10, font=Listbox_FONT)
         self.L.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("topten"))
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("topten"), font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
@@ -539,17 +547,17 @@ class wordspage(tk.Frame):
         self.controller = controller
         label = tk.Label(self, text="選擇字庫", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
-        label.place(x=400, y=250, anchor=CENTER)
-        button = tk.Button(self, text="7000單",command= lambda:self.goword("7000.txt"))
+        label.place(x=400, y=200, anchor=CENTER)
+        button = tk.Button(self, text="7000單",command= lambda:self.goword("7000.txt"),font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=400, y=300, anchor=CENTER)
-        button = tk.Button(self, text="自定",command= lambda:self.goword("words.txt"))
+        button.place(x=400, y=275, anchor=CENTER)
+        button = tk.Button(self, text="自定",command= lambda:self.goword("words.txt"),font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("gamepage"))
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("gamepage"),font=BTN_FONT)
         #button.grid(row=2,columnspan=4)
-        button.place(x=500, y=400, anchor=CENTER)
+        button.place(x=500, y=425, anchor=CENTER)
     def goword(self,filename):
         global allwords
         text_file = open(filename, "r")
@@ -662,7 +670,7 @@ class wordpage(tk.Frame):
                     elif event.key == K_BACKSPACE:
                         word_input = word_input[:-1]
                         #pass
-                    elif event.key == K_RETURN:
+                    elif event.key == K_RETURN or event.key == K_SPACE:
                         for word in words:
                             if word.word==word_input:
                                 self.shoot_sound.play()
