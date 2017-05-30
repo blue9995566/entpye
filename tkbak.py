@@ -5,7 +5,7 @@ import tkMessageBox
 import MySQLdb
 
 import platform
-import os
+#import os
 
 import pygame
 from pygame.locals import *
@@ -14,6 +14,8 @@ from sys import exit
 import random
 import time
 import os
+
+from PIL import Image, ImageTk
 
 TITLE_FONT = ("Helvetica", 18, "bold")
 HOST="140.120.57.34"
@@ -30,6 +32,7 @@ letters=["a","b","c","d","e","f","g","h","i","j","k","l"\
         ,"m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 imgs=["ball1.png","ball2.png","ball3.png","ball4.png","ball5.png","ball6.png"]
 
+import threading
 
 class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -38,12 +41,18 @@ class SampleApp(tk.Tk):
         # on top of each other, then the one we want visible
         # will be raised above the others
         container = tk.Frame(self)
+
+        """image = Image.open('img/bg.jpg')
+        photo_image = ImageTk.PhotoImage(image)
+        label = tk.Label(container, image = photo_image)
+        label.place(x=0, y=0, relwidth=1, relheight=1)"""
+
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, RegistPage, Menu,gamepage,letterpage,person,person_letter,topten,topten_letter):
+        for F in (StartPage, RegistPage, Menu,gamepage,letterpage,person,person_letter,person_word,topten,topten_letter,topten_word,wordspage,wordpage):
             page_name = F.__name__
             frame = F(container, self)
             self.frames[page_name] = frame
@@ -66,6 +75,7 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
         label = tk.Label(self, text="This is the start page", font=TITLE_FONT)
         #label.grid(row=0,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
@@ -166,7 +176,6 @@ def top_record(tpyee,listbox):
         print "Error %d: %s" % (e.args[0], e.args[1])
         tkMessageBox.showinfo( "Fail to connect", "Please check connection!")
 
-
 def DBinsert(name,pwd):
     try:
         db = MySQLdb.connect(HOST,"entypeuser","entypeuser","entype",charset='utf8')
@@ -206,8 +215,6 @@ def record_insert(uid,grade,typee):
         print "Error %d: %s" % (e.args[0], e.args[1])
         tkMessageBox.showinfo( "Fail to connect", "Please check connection!")
 
-
-
 class RegistPage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -241,8 +248,6 @@ class RegistPage(tk.Frame):
             DBinsert(self.nameEntry.get(),self.passEntry.get())
         else:
             tkMessageBox.showinfo( "Fail to regist", "Please check the form!")
-
-
 
 class Menu(tk.Frame):
     def __init__(self, parent, controller):
@@ -282,11 +287,11 @@ class gamepage(tk.Frame):
         label = tk.Label(self, text="選擇模式", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=250, anchor=CENTER)
-        button = tk.Button(self, text="字母",command=self.next)
+        button = tk.Button(self, text="字母",command=self.goletter)
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="單字",command=lambda:controller.show_frame("Menu"))
+        button = tk.Button(self, text="單字",command=lambda:controller.show_frame("wordspage"))
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
@@ -294,10 +299,9 @@ class gamepage(tk.Frame):
         button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"))
         #button.grid(row=2,columnspan=4)
         button.place(x=500, y=400, anchor=CENTER)
-    def next(self):
+    def goletter(self):
         self.controller.show_frame("letterpage")
         app.frames['letterpage'].run()
-
 
 class person(tk.Frame):
     def __init__(self, parent, controller):
@@ -306,20 +310,23 @@ class person(tk.Frame):
         label = tk.Label(self, text="選擇模式", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=250, anchor=CENTER)
-        button = tk.Button(self, text="字母",command=self.show_preson)
+        button = tk.Button(self, text="字母",command=self.show_preson_letter)
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="單字",command=lambda:controller.show_frame("Menu"))
+        button = tk.Button(self, text="單字",command=self.show_preson_word)
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
         button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"))
         #button.grid(row=2,columnspan=4)
         button.place(x=500, y=400, anchor=CENTER)
-    def show_preson(self):
+    def show_preson_letter(self):
         person_record(login_id,1,app.frames['person_letter'].L)
         self.controller.show_frame("person_letter")
+    def show_preson_word(self):
+        person_record(login_id,2,app.frames['person_word'].L)
+        self.controller.show_frame("person_word")
 
 class person_letter(tk.Frame):
     def __init__(self, parent, controller):
@@ -336,6 +343,20 @@ class person_letter(tk.Frame):
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
+class person_word(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="單字，個人紀錄", font=TITLE_FONT)
+        #label.grid(row=1,columnspan=4)
+        label.place(x=400, y=100, anchor=CENTER)
+
+        self.L=Listbox(self,width=50, height=20)
+        self.L.place(x=400, y=300, anchor=CENTER)
+
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("person"))
+        #button.grid(row=2,columnspan=4)
+        button.place(x=600, y=500, anchor=CENTER)
 
 class topten(tk.Frame):
     def __init__(self, parent, controller):
@@ -344,20 +365,23 @@ class topten(tk.Frame):
         label = tk.Label(self, text="排行榜，選擇模式", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=250, anchor=CENTER)
-        button = tk.Button(self, text="字母",command=self.topten_letter)
+        button = tk.Button(self, text="字母",command=self.show_topten_letter)
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="單字",command=lambda:controller.show_frame("Menu"))
+        button = tk.Button(self, text="單字",command=self.show_topten_word)
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
         button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"))
         #button.grid(row=2,columnspan=4)
         button.place(x=500, y=400, anchor=CENTER)
-    def topten_letter(self):
+    def show_topten_letter(self):
         top_record(1,app.frames['topten_letter'].L)
         self.controller.show_frame("topten_letter")
+    def show_topten_word(self):
+        top_record(2,app.frames['topten_word'].L)
+        self.controller.show_frame("topten_word")
 
 class topten_letter(tk.Frame):
     def __init__(self, parent, controller):
@@ -374,6 +398,20 @@ class topten_letter(tk.Frame):
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
+class topten_word(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="排行榜-單字", font=TITLE_FONT)
+        #label.grid(row=1,columnspan=4)
+        label.place(x=400, y=100, anchor=CENTER)
+
+        self.L=Listbox(self,width=50, height=20)
+        self.L.place(x=400, y=300, anchor=CENTER)
+
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("topten"))
+        #button.grid(row=2,columnspan=4)
+        button.place(x=600, y=500, anchor=CENTER)
 
 class letterpage(tk.Frame):
     def __init__(self, parent, controller):
@@ -399,8 +437,8 @@ class letterpage(tk.Frame):
         self.music=self.pygame.mixer.music
         self.music.load("sound/bgm.mp3")
         self.music.set_volume(0.3)
-        my_event = self.pygame.event.Event(MOUSEBUTTONDOWN, button=1,pos=(500,500))
-        self.pygame.event.post(my_event)
+        #my_event = self.pygame.event.Event(MOUSEBUTTONDOWN, button=1,pos=(500,500))
+        #self.pygame.event.post(my_event)
         grade=0
         message= "Grade:{}".format(grade)
         self.font = pygame.font.SysFont('Comic Sans MS', 50)
@@ -477,8 +515,8 @@ class letterpage(tk.Frame):
         while True:
             self.music.stop()
             self.screen.blit(self.text, ((size[0]-self.text.get_width())/2, (size[1]-self.text.get_height())/2))
-            gameover_message="gameover press C to try again!"
-            gameover_text = self.font.render(gameover_message, True, white)
+            gameover_message="C to try again! Q to quit!"
+            gameover_text = self.font.render(gameover_message, True, green)
             self.screen.blit(gameover_text, ((size[0]-gameover_text.get_width())/2, (size[1]-gameover_text.get_height())/2+50))
             self.display.update()
             for event in self.pygame.event.get():
@@ -495,6 +533,202 @@ class letterpage(tk.Frame):
                         self.pygame.quit()
                         self.controller.show_frame("gamepage")
 
+class wordspage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+        label = tk.Label(self, text="選擇字庫", font=TITLE_FONT)
+        #label.grid(row=1,columnspan=4)
+        label.place(x=400, y=250, anchor=CENTER)
+        button = tk.Button(self, text="7000單",command= lambda:self.goword("7000.txt"))
+        #button.grid(row=2,columnspan=4)
+        button.place(x=400, y=300, anchor=CENTER)
+        button = tk.Button(self, text="自定",command= lambda:self.goword("words.txt"))
+        #button.grid(row=2,columnspan=4)
+        button.place(x=400, y=350, anchor=CENTER)
+
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("gamepage"))
+        #button.grid(row=2,columnspan=4)
+        button.place(x=500, y=400, anchor=CENTER)
+    def goword(self,filename):
+        global allwords
+        text_file = open(filename, "r")
+        allwords=text_file.readline().rstrip('\n').split(',')
+        text_file.close()
+        self.controller.show_frame("wordpage")
+        app.frames['wordpage'].run()
+
+text_file = open("words.txt", "r")
+allwords=text_file.readline().rstrip('\n').split(',')
+text_file.close()
+positions=[]
+words=[]
+def newposition():
+    a=(-10,random.randint(0,9)*60)
+    while a in positions:
+        a=(-10,random.randint(0,9)*60)
+    positions.append(a)
+    return a
+
+class a_word:
+    def __init__(self):
+        font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.word=random.choice(allwords)
+        self.text = font.render(self.word, True, white)
+        self.initpos=newposition()
+        self.x=self.initpos[0]
+        self.y=self.initpos[1]
+    def draw(self,frames):
+        frames.screen.blit(self.text, (self.x,self.y))
+
+class myThread (threading.Thread):
+    def __init__(self, threadID, name, counter):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter
+        self.shutdown_flag = threading.Event()
+    def run(self):
+        global words
+        global positions
+        while not self.shutdown_flag.is_set():
+            #print time.time()
+            positions=[]
+            for x in range(1):
+                words.append(a_word())
+            time.sleep(self.counter)
+
+class wordpage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller
+
+    def run(self):
+        os.environ['SDL_WINDOWID'] = str(self.winfo_id())
+        if sys.platform == "windows":
+            os.environ['SDL_VIDEODRIVER'] = 'windib'
+        self.pygame=pygame
+        self.pygame.init()
+        self.display=self.pygame.display
+        self.screen = self.pygame.display.set_mode((800, 600))
+        self.clock=self.pygame.time.Clock()
+        self.bg = self.pygame.image.load("img/bg.jpg")
+        self.top = self.pygame.image.load("img/top.png")
+        self.pygame.mixer.init(frequency = 44100, size = -16, channels = 1, buffer = 2**12) 
+        self.boom_sound = pygame.mixer.Sound("sound/boom.wav")
+        self.shoot_sound = pygame.mixer.Sound("sound/shoot.wav")
+        self.music=self.pygame.mixer.music
+        self.music.load("sound/bgm.mp3")
+        self.music.set_volume(0.3)
+        self.font=pygame.font.SysFont('Comic Sans MS', 50)
+        self.pygame.mixer.music.play(-1)
+
+        thread1 = myThread(1, "Thread-1", 2)
+        thread1.start()
+        global words
+        self.wpm=0
+        grade=0
+        heart=3
+        words=[]
+        print words
+        FPS=30
+        word_input= ""
+        start=time.time()
+        while True and heart>0:
+            global positions
+            
+            input_text= self.font.render(word_input, True, blue)
+            message= "Grade:{}".format(grade)
+            text = self.font.render(message, True, red)
+            heartimg=pygame.image.load("img/{}heart.png".format(heart))
+            keys = self.pygame.key.get_pressed() 
+            if keys[K_BACKSPACE]:
+                pass
+                #word_input = word_input[:-1]
+            for event in self.pygame.event.get():
+                #print event
+                if event.type == QUIT:
+                    self.pygame.quit()
+                    thread1.shutdown_flag.set()
+                    thread1.join()
+                    exit()
+                if event.type == KEYDOWN:
+                    needtokill=[]
+                    if event.key == K_ESCAPE:
+                        self.pygame.quit()
+                        thread1.shutdown_flag.set()
+                        thread1.join()
+                        exit()
+                    elif event.key == K_BACKSPACE:
+                        word_input = word_input[:-1]
+                        #pass
+                    elif event.key == K_RETURN:
+                        for word in words:
+                            if word.word==word_input:
+                                self.shoot_sound.play()
+                                grade+=1
+                                needtokill.append(words.index(word))
+                        if len(needtokill)==0:
+                            self.boom_sound.play()
+                        else:
+                            for x in range(len(needtokill)):
+                                del words[needtokill[len(needtokill)-x-1]]
+                        word_input=""
+                    else:
+                        word_input+=self.pygame.key.name(event.key)
+
+            #screen.fill(white)
+            self.screen.blit(self.bg, (0,0))
+            self.screen.blit(input_text, (0, size[1]-text.get_height()))
+            self.screen.blit(text, (size[0]-text.get_width(),0))
+            self.screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
+            for word in words:
+                if word.x >= size[0]:
+                    heart-=1
+                    if heart==0:
+                        break
+                    self.boom_sound.play()
+                    del words[words.index(word)]
+                else:
+                    word.draw(self)
+                    word.x+=4
+            self.clock.tick(FPS)
+            self.pygame.display.update()
+        end = time.time()
+        self.wpm=int(round(grade/(end-start)*60))
+        heartimg=pygame.image.load("img/{}heart.png".format(heart))
+        self.screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
+        self.pygame.display.update()
+        thread1.shutdown_flag.set()
+        #thread1.join()
+        record_insert(login_id,self.wpm,2)
+        self.gameover()
+
+    
+
+    def gameover(self):
+        while True:
+            self.pygame.mixer.music.stop()
+            message= "wpm:{}".format(self.wpm)
+            text = self.font.render(message, True, red)
+            self.screen.blit(text, ((size[0]-text.get_width())/2, (size[1]-text.get_height())/2))
+            gameover_message="C to try again! Q to quit!"
+            gameover_text = self.font.render(gameover_message, True, green)
+            self.screen.blit(gameover_text, ((size[0]-gameover_text.get_width())/2, (size[1]-gameover_text.get_height())/2+50))
+            self.pygame.display.update()
+            for event in self.pygame.event.get():
+                if event.type == QUIT:
+                    self.pygame.quit()
+                    exit()
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        self.pygame.quit()
+                        exit()
+                    if event.key == K_c:
+                        self.run()
+                    if event.key == K_q:
+                        self.pygame.quit()
+                        self.controller.show_frame("gamepage")
 
 class ball:
     def __init__(self):
@@ -512,12 +746,12 @@ class ball:
                              self.y+self.img.get_rect().size[1]/5))
 
 
-
 login_id=0
 
 if __name__ == "__main__":
     app = SampleApp()
     app.title("Entype")
+    app.configure(background='black')
     app.resizable(0,0)
     app.geometry("800x600")
     app.mainloop()
