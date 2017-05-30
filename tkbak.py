@@ -131,7 +131,7 @@ def DBinsert(name,pwd):
 def record_insert(uid,grade,typee):
     try:
         db = MySQLdb.connect(HOST,"entypeuser","entypeuser","entype",charset='utf8')
-        insert_sql = "INSERT INTO record (id, uid,type, grade, `time`) VALUES (NULL, \'%d\', \'%d\', \'%d\',CURRENT_DATE);"% (uid,typee,grade)
+        insert_sql = "INSERT INTO record (id, uid,type, grade, `time`) VALUES (NULL, \'%d\', \'%d\', \'%d\',CURRENT_TIMESTAMP);"% (uid,typee,grade)
         # 執行SQL statement
         cursor = db.cursor()
         cursor.execute(insert_sql)
@@ -593,10 +593,11 @@ class wordpage(tk.Frame):
                 if event.type == KEYDOWN:
                     needtokill=[]
                     if event.key == K_ESCAPE:
-                        self.pygame.quit()
-                        thread1.shutdown_flag.set()
-                        thread1.join()
-                        exit()
+                        heart=0
+                        #self.pygame.quit()
+                        #thread1.shutdown_flag.set()
+                        #thread1.join()
+                        #exit()
                     elif event.key == K_BACKSPACE:
                         word_input = word_input[:-1]
                         #pass
@@ -692,8 +693,8 @@ class letterpage(tk.Frame):
         self.music=self.pygame.mixer.music
         self.music.load("sound/bgm.mp3")
         self.music.set_volume(0.3)
-        #my_event = self.pygame.event.Event(MOUSEBUTTONDOWN, button=1,pos=(500,500))
-        #self.pygame.event.post(my_event)
+        my_event = self.pygame.event.Event(MOUSEBUTTONDOWN, button=1,pos=(10,10))
+        self.pygame.event.post(my_event)
         grade=0
         message= "Grade:{}".format(grade)
         self.font = pygame.font.SysFont('Comic Sans MS', 50)
@@ -722,8 +723,9 @@ class letterpage(tk.Frame):
                     exit()
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
-                        self.pygame.quit()
-                        exit()
+                        heart=0
+                        #self.pygame.quit()
+                        #exit()
                     same=0
                     for balloon in balls:
                         if balloon.letter==self.pygame.key.name(event.key):
