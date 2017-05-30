@@ -35,6 +35,7 @@ title = "Hello, Pygame!"
 letters=["a","b","c","d","e","f","g","h","i","j","k","l"\
         ,"m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 imgs=["ball1.png","ball2.png","ball3.png","ball4.png","ball5.png","ball6.png"]
+image = Image.open('img/fbg.jpg')
 
 import threading
 
@@ -148,13 +149,8 @@ class SampleApp(tk.Tk):
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
         # will be raised above the others
+
         container = tk.Frame(self)
-
-        """image = Image.open('img/bg.jpg')
-        photo_image = ImageTk.PhotoImage(image)
-        label = tk.Label(container, image = photo_image)
-        label.place(x=0, y=0, relwidth=1, relheight=1)"""
-
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
@@ -171,7 +167,7 @@ class SampleApp(tk.Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("StartPage")
-        #self.show_frame("letterpage")
+        #self.show_frame("aaa")
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
@@ -179,36 +175,41 @@ class SampleApp(tk.Tk):
         frame.tkraise()
 
 class StartPage(tk.Frame):
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+        #self.image = Image.open('img/fbg.jpg')
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
 
-        label = tk.Label(self, text="登入頁面", font=TITLE_FONT)
+        #self.configure(background='red')
+
+        label = tk.Label(self, text="登入頁面", font=TITLE_FONT,background='yellow')
         #label.grid(row=0,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
 
-        account_label = tk.Label(self, text="帳號:", font=TITLE_FONT)
+        account_label = tk.Label(self, text="帳號:", font=TITLE_FONT,background='yellow')
         #account_label.grid(row=1,column=0,columnspan=2)
         account_label.place(x=300, y=250, anchor=CENTER)
 
         self.nameEntry = Entry(self, font=Entry_FONT)
         self.nameEntry.grid(row=1,column=3)
-        self.nameEntry.place(x=450, y=250, anchor=CENTER)
+        self.nameEntry.place(x=470, y=250, anchor=CENTER)
 
-        pwd_label = tk.Label(self, text="密碼:", font=TITLE_FONT)
+        pwd_label = tk.Label(self, text="密碼:", font=TITLE_FONT,background='yellow')
         pwd_label.grid(row=2,column=0,columnspan=2)
         pwd_label.place(x=300, y=300, anchor=CENTER)
 
         self.passEntry = Entry(self, show='*', font=Entry_FONT)
         self.passEntry.grid(row=2,column=3)
-        self.passEntry.place(x=450, y=300, anchor=CENTER)
+        self.passEntry.place(x=470, y=300, anchor=CENTER)
 
         button1 = tk.Button(self, text="註冊",
-                            command=lambda: controller.show_frame("RegistPage"),font=BTN_FONT)
+                            command=lambda: controller.show_frame("RegistPage"),font=BTN_FONT,background='red')
         button1.place(x=300, y=350, anchor=CENTER)
         #button1.grid(row=3,column=0,columnspan=2)
-        button2 = tk.Button(self, text="登入",command=self.login,font=BTN_FONT)
+        button2 = tk.Button(self, text="登入",command=self.login,font=BTN_FONT,background='green')
         button2.place(x=450, y=350, anchor=CENTER)
         #button2.grid(row=3,column=3)
     def login(self):
@@ -222,10 +223,14 @@ class StartPage(tk.Frame):
             tkMessageBox.showinfo( "Fail to regist", "請填帳號密碼!")
 
 class RegistPage(tk.Frame):
-
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         label = tk.Label(self, text="註冊頁面", font=TITLE_FONT)
         label.place(x=400, y=200, anchor=CENTER)
         
@@ -233,14 +238,14 @@ class RegistPage(tk.Frame):
         account_label.place(x=300, y=250, anchor=CENTER)
 
         self.nameEntry = Entry(self, font=Entry_FONT)
-        self.nameEntry.place(x=450, y=250, anchor=CENTER)
+        self.nameEntry.place(x=470, y=250, anchor=CENTER)
 
 
         pwd_label = tk.Label(self, text="密碼:", font=TITLE_FONT)
         pwd_label.place(x=300, y=300, anchor=CENTER)
 
         self.passEntry = Entry(self, show='*', font=Entry_FONT)
-        self.passEntry.place(x=450, y=300, anchor=CENTER)
+        self.passEntry.place(x=470, y=300, anchor=CENTER)
 
         button = tk.Button(self, text="上一頁",
                            command=lambda: controller.show_frame("StartPage"), font=BTN_FONT)
@@ -261,6 +266,11 @@ class Menu(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         self.id_var=StringVar()
         #self.id_var.set("dfgzxgffdgh")
         #textvariable=id_var
@@ -292,6 +302,11 @@ class gamepage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         label = tk.Label(self, text="選擇模式", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=250, anchor=CENTER)
@@ -315,6 +330,11 @@ class person(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         label = tk.Label(self, text="個人紀錄", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
@@ -340,6 +360,11 @@ class person_letter(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         label = tk.Label(self, text="字母，個人紀錄", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
@@ -355,6 +380,11 @@ class person_word(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         label = tk.Label(self, text="單字，個人紀錄", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
@@ -370,6 +400,11 @@ class topten(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         label = tk.Label(self, text="排行榜", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
@@ -395,6 +430,11 @@ class topten_letter(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         label = tk.Label(self, text="排行榜-字母", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
@@ -410,6 +450,11 @@ class topten_word(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         label = tk.Label(self, text="排行榜-單字", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
@@ -421,130 +466,15 @@ class topten_word(tk.Frame):
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
-class letterpage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller 
-        #button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("gamepage"))
-        #button.grid(row=2,columnspan=4)
-        #button.place(x=600, y=500, anchor=CENTER)
-    def run(self):
-        os.environ['SDL_WINDOWID'] = str(self.winfo_id())
-        if sys.platform == "windows":
-            os.environ['SDL_VIDEODRIVER'] = 'windib'
-        self.pygame=pygame
-        self.pygame.init()
-        self.display=self.pygame.display
-        self.screen = self.pygame.display.set_mode((800, 600))
-        self.clock=self.pygame.time.Clock()
-        self.bg = self.pygame.image.load("img/bg.jpg")
-        self.top = self.pygame.image.load("img/top.png")
-        self.pygame.mixer.init(frequency = 44100, size = -16, channels = 1, buffer = 2**12) 
-        self.boom_sound = pygame.mixer.Sound("sound/boom.wav")
-        self.shoot_sound = pygame.mixer.Sound("sound/shoot.wav")
-        self.music=self.pygame.mixer.music
-        self.music.load("sound/bgm.mp3")
-        self.music.set_volume(0.3)
-        #my_event = self.pygame.event.Event(MOUSEBUTTONDOWN, button=1,pos=(500,500))
-        #self.pygame.event.post(my_event)
-        grade=0
-        message= "Grade:{}".format(grade)
-        self.font = pygame.font.SysFont('Comic Sans MS', 50)
-        self.text = self.font.render(message, True, red)
-        self.music.play(-1)
-
-        grade=0
-        heart=3
-        balls=list([ball() for count in xrange(5)])
-        print balls
-        addball=0
-        FPS=10
-
-        while True and heart>0:
-            my_event = self.pygame.event.Event(MOUSEBUTTONDOWN, button=1,pos=(500,500))
-            self.pygame.event.post(my_event)
-            message= "Grade:{}".format(grade)
-            self.text = self.font.render(message, True, red)
-            heartimg=pygame.image.load("img/{}heart.png".format(heart))
-            #message2= "Heart:{}".format(heart)
-            #text2 = font.render(message2, True, red)
-            for event in self.pygame.event.get():
-                print event
-                if event.type == QUIT:
-                    self.pygame.quit()
-                    exit()
-                if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        self.pygame.quit()
-                        exit()
-                    same=0
-                    for balloon in balls:
-                        if balloon.letter==self.pygame.key.name(event.key):
-                            self.shoot_sound.play()
-                            grade+=1
-                            addball+=1
-                            balloon.__init__()
-                            #del balls[balls.index(balloon)] 
-                            #balls.append(ball())
-                            same +=1
-                    if same==0:
-                        heart-=1
-                        self.boom_sound.play()
-
-            #screen.fill(white)
-            self.screen.blit(self.bg, (0,0))
-            self.screen.blit(self.top, (0,0))
-            self.screen.blit(self.text, (0, size[1]-self.text.get_height()))
-            self.screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
-            #screen.blit(text2, (size[0]-text2.get_width(), size[1]-text2.get_height()))
-            for balloon in balls:
-                if balloon.y <= 10:
-                    heart-=1
-                    if heart==0:
-                        break
-                    self.boom_sound.play()
-                    balloon.__init__()
-                else:
-                    balloon.draw(self)
-                    balloon.y-=10
-            if addball>20:
-                balls.append(ball())
-                FPS+=5
-                addball=0
-
-            self.clock.tick(FPS)
-            self.display.update()
-        heartimg=pygame.image.load("img/{}heart.png".format(heart))
-        self.screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
-        self.display.update()
-        record_insert(login_id,grade,1)
-        self.gameover()
-    def gameover(self):
-        while True:
-            self.music.stop()
-            self.screen.blit(self.text, ((size[0]-self.text.get_width())/2, (size[1]-self.text.get_height())/2))
-            gameover_message="C to try again! Q to quit!"
-            gameover_text = self.font.render(gameover_message, True, green)
-            self.screen.blit(gameover_text, ((size[0]-gameover_text.get_width())/2, (size[1]-gameover_text.get_height())/2+50))
-            self.display.update()
-            for event in self.pygame.event.get():
-                #print event
-                if event.type == QUIT:
-                    self.pygame.quit()
-                    exit()
-                if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        exit()
-                    if event.key == K_c:
-                        self.run()
-                    if event.key == K_q:
-                        self.pygame.quit()
-                        self.controller.show_frame("gamepage")
-
 class wordspage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
+
+        self.photo_image = ImageTk.PhotoImage(image)
+        self.labelbg = tk.Label(self, image = self.photo_image)
+        self.labelbg.pack()
+
         label = tk.Label(self, text="選擇字庫", font=TITLE_FONT)
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
@@ -738,6 +668,126 @@ class wordpage(tk.Frame):
                         self.pygame.quit()
                         self.controller.show_frame("gamepage")
 
+class letterpage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        self.controller = controller 
+        #button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("gamepage"))
+        #button.grid(row=2,columnspan=4)
+        #button.place(x=600, y=500, anchor=CENTER)
+    def run(self):
+        os.environ['SDL_WINDOWID'] = str(self.winfo_id())
+        if sys.platform == "windows":
+            os.environ['SDL_VIDEODRIVER'] = 'windib'
+        self.pygame=pygame
+        self.pygame.init()
+        self.display=self.pygame.display
+        self.screen = self.pygame.display.set_mode((800, 600))
+        self.clock=self.pygame.time.Clock()
+        self.bg = self.pygame.image.load("img/bg.jpg")
+        self.top = self.pygame.image.load("img/top.png")
+        self.pygame.mixer.init(frequency = 44100, size = -16, channels = 1, buffer = 2**12) 
+        self.boom_sound = pygame.mixer.Sound("sound/boom.wav")
+        self.shoot_sound = pygame.mixer.Sound("sound/shoot.wav")
+        self.music=self.pygame.mixer.music
+        self.music.load("sound/bgm.mp3")
+        self.music.set_volume(0.3)
+        #my_event = self.pygame.event.Event(MOUSEBUTTONDOWN, button=1,pos=(500,500))
+        #self.pygame.event.post(my_event)
+        grade=0
+        message= "Grade:{}".format(grade)
+        self.font = pygame.font.SysFont('Comic Sans MS', 50)
+        self.text = self.font.render(message, True, red)
+        self.music.play(-1)
+
+        grade=0
+        heart=3
+        balls=list([ball() for count in xrange(5)])
+        print balls
+        addball=0
+        FPS=10
+
+        while True and heart>0:
+            my_event = self.pygame.event.Event(MOUSEBUTTONDOWN, button=1,pos=(500,500))
+            self.pygame.event.post(my_event)
+            message= "Grade:{}".format(grade)
+            self.text = self.font.render(message, True, red)
+            heartimg=pygame.image.load("img/{}heart.png".format(heart))
+            #message2= "Heart:{}".format(heart)
+            #text2 = font.render(message2, True, red)
+            for event in self.pygame.event.get():
+                print event
+                if event.type == QUIT:
+                    self.pygame.quit()
+                    exit()
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        self.pygame.quit()
+                        exit()
+                    same=0
+                    for balloon in balls:
+                        if balloon.letter==self.pygame.key.name(event.key):
+                            self.shoot_sound.play()
+                            grade+=1
+                            addball+=1
+                            balloon.__init__()
+                            #del balls[balls.index(balloon)] 
+                            #balls.append(ball())
+                            same +=1
+                    if same==0:
+                        heart-=1
+                        self.boom_sound.play()
+
+            #screen.fill(white)
+            self.screen.blit(self.bg, (0,0))
+            self.screen.blit(self.top, (0,0))
+            self.screen.blit(self.text, (0, size[1]-self.text.get_height()))
+            self.screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
+            #screen.blit(text2, (size[0]-text2.get_width(), size[1]-text2.get_height()))
+            for balloon in balls:
+                if balloon.y <= 10:
+                    heart-=1
+                    if heart==0:
+                        break
+                    self.boom_sound.play()
+                    balloon.__init__()
+                else:
+                    balloon.draw(self)
+                    balloon.y-=10
+            if addball>20:
+                balls.append(ball())
+                FPS+=5
+                addball=0
+
+            self.clock.tick(FPS)
+            self.display.update()
+        heartimg=pygame.image.load("img/{}heart.png".format(heart))
+        self.screen.blit(heartimg, (size[0]-heartimg.get_rect().size[0], size[1]-heartimg.get_rect().size[1]))
+        self.display.update()
+        record_insert(login_id,grade,1)
+        self.gameover()
+    def gameover(self):
+        while True:
+            self.music.stop()
+            self.screen.blit(self.text, ((size[0]-self.text.get_width())/2, (size[1]-self.text.get_height())/2))
+            gameover_message="C to try again! Q to quit!"
+            gameover_text = self.font.render(gameover_message, True, green)
+            self.screen.blit(gameover_text, ((size[0]-gameover_text.get_width())/2, (size[1]-gameover_text.get_height())/2+50))
+            self.display.update()
+            for event in self.pygame.event.get():
+                #print event
+                if event.type == QUIT:
+                    self.pygame.quit()
+                    exit()
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        exit()
+                    if event.key == K_c:
+                        self.run()
+                    if event.key == K_q:
+                        self.pygame.quit()
+                        self.controller.show_frame("gamepage")
+
 class ball:
     def __init__(self):
         font = pygame.font.SysFont('Comic Sans MS', 60)
@@ -759,7 +809,6 @@ login_id=0
 if __name__ == "__main__":
     app = SampleApp()
     app.title("Entype")
-    app.configure(background='black')
     app.resizable(0,0)
     app.geometry("800x600")
     app.mainloop()
