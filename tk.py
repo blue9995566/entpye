@@ -4,6 +4,8 @@ from Tkinter import *
 import tkMessageBox
 import MySQLdb
 
+import ttk
+
 import platform
 #import os
 
@@ -71,11 +73,22 @@ def person_record(uid,tpyee,listbox):
         cursor = db.cursor()
         cursor.execute(record_sql)
         results = cursor.fetchall()
-        listbox.delete(0,END)
+        """listbox.delete(0,END)
         for record in results:
-            listbox.insert(END,"{}---{}".format(record[3],record[4]))
+            listbox.insert(END,"{}---{}".format(record[3],record[4]))"""
             #app.frames['PageTwo'].id_var.set(hello_user)
             #tkMessageBox.showinfo( "Successfully", "Login successfully!")
+        listbox['show'] = 'headings'
+        listbox["columns"]=("Score","Time")
+        listbox.column("Score", width=200,anchor="center")
+        listbox.column("Time", width=200,anchor="center")
+        listbox.heading("Score", text="分數")
+        listbox.heading("Time", text="時間")
+        listbox.delete(*listbox.get_children())
+        for record in results:
+            listbox.insert("",END,values=(record[3],record[4]))
+
+
         # 關閉連線
         db.close()
 
@@ -90,13 +103,28 @@ def top_record(tpyee,listbox):
         cursor = db.cursor()
         cursor.execute(record_sql)
         results = cursor.fetchall()
-        listbox.delete(0,END)
+        """listbox.delete(0,END)
         x=1
         for record in results:
             listbox.insert(END,"第{}名:{}---{}".format(x,record[0],record[1]))
-            x+=1
+            x+=1"""
             #app.frames['PageTwo'].id_var.set(hello_user)
             #tkMessageBox.showinfo( "Successfully", "Login successfully!")
+
+        listbox['show'] = 'headings'
+        listbox["columns"]=("Rank","Name","Score")
+        listbox.column("Rank", width=200,anchor="center")
+        listbox.column("Name", width=200,anchor="center")
+        listbox.column("Score", width=200,anchor="center")
+        listbox.heading("Rank", text="名次")
+        listbox.heading("Name", text="姓名")
+        listbox.heading("Score", text="分數")
+        listbox.delete(*listbox.get_children())
+        x=1
+        for record in results:
+            listbox.insert("",END,values=("第%d名"%x,record[0],record[1]))
+            x+=1
+
         # 關閉連線
         db.close()
 
@@ -169,6 +197,13 @@ class SampleApp(tk.Tk):
         self.show_frame("StartPage")
         #self.show_frame("aaa")
 
+
+        style = ttk.Style()
+        #style.configure(".", font=('Helvetica', 15), foreground="white")
+        style.configure("Treeview", font=('Helvetica', 15), foreground="blue")
+        style.configure("Treeview.Heading", font=('Helvetica', 18), foreground="red")
+
+
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
         frame = self.frames[page_name]
@@ -185,11 +220,11 @@ class StartPage(tk.Frame):
 
         #self.configure(background='red')
 
-        label = tk.Label(self, text="登入頁面", font=TITLE_FONT,background='yellow')
+        label = tk.Label(self, text="登入頁面", font=TITLE_FONT,background='pink')
         #label.grid(row=0,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
 
-        account_label = tk.Label(self, text="帳號:", font=TITLE_FONT,background='yellow')
+        account_label = tk.Label(self, text="帳號:", font=TITLE_FONT,background='lightyellow')
         #account_label.grid(row=1,column=0,columnspan=2)
         account_label.place(x=300, y=250, anchor=CENTER)
 
@@ -197,7 +232,7 @@ class StartPage(tk.Frame):
         self.nameEntry.grid(row=1,column=3)
         self.nameEntry.place(x=470, y=250, anchor=CENTER)
 
-        pwd_label = tk.Label(self, text="密碼:", font=TITLE_FONT,background='yellow')
+        pwd_label = tk.Label(self, text="密碼:", font=TITLE_FONT,background='lightyellow')
         pwd_label.grid(row=2,column=0,columnspan=2)
         pwd_label.place(x=300, y=300, anchor=CENTER)
 
@@ -206,10 +241,10 @@ class StartPage(tk.Frame):
         self.passEntry.place(x=470, y=300, anchor=CENTER)
 
         button1 = tk.Button(self, text="註冊",
-                            command=lambda: controller.show_frame("RegistPage"),font=BTN_FONT,background='red')
+                            command=lambda: controller.show_frame("RegistPage"),font=BTN_FONT,background='lightsalmon')
         button1.place(x=300, y=350, anchor=CENTER)
         #button1.grid(row=3,column=0,columnspan=2)
-        button2 = tk.Button(self, text="登入",command=self.login,font=BTN_FONT,background='green')
+        button2 = tk.Button(self, text="登入",command=self.login,font=BTN_FONT,background='lightgreen')
         button2.place(x=450, y=350, anchor=CENTER)
         #button2.grid(row=3,column=3)
     def login(self):
@@ -231,24 +266,24 @@ class RegistPage(tk.Frame):
         self.labelbg = tk.Label(self, image = self.photo_image)
         self.labelbg.pack()
 
-        label = tk.Label(self, text="註冊頁面", font=TITLE_FONT)
+        label = tk.Label(self, text="註冊頁面", font=TITLE_FONT,background='pink')
         label.place(x=400, y=200, anchor=CENTER)
         
-        account_label = tk.Label(self, text="帳號:", font=TITLE_FONT)
+        account_label = tk.Label(self, text="帳號:", font=TITLE_FONT,background='lightyellow')
         account_label.place(x=300, y=250, anchor=CENTER)
 
         self.nameEntry = Entry(self, font=Entry_FONT)
         self.nameEntry.place(x=470, y=250, anchor=CENTER)
 
 
-        pwd_label = tk.Label(self, text="密碼:", font=TITLE_FONT)
+        pwd_label = tk.Label(self, text="密碼:", font=TITLE_FONT,background='lightyellow')
         pwd_label.place(x=300, y=300, anchor=CENTER)
 
         self.passEntry = Entry(self, show='*', font=Entry_FONT)
         self.passEntry.place(x=470, y=300, anchor=CENTER)
 
         button = tk.Button(self, text="上一頁",
-                           command=lambda: controller.show_frame("StartPage"), font=BTN_FONT)
+                           command=lambda: controller.show_frame("StartPage"), font=BTN_FONT,background='lightsalmon')
         button.place(x=300, y=350, anchor=CENTER)
 
         B = tk.Button(self, text ="註冊", command = self.helloCallBack,fg="blue", font=BTN_FONT)
@@ -274,23 +309,23 @@ class Menu(tk.Frame):
         self.id_var=StringVar()
         #self.id_var.set("dfgzxgffdgh")
         #textvariable=id_var
-        label = tk.Label(self, textvariable=self.id_var, font=TITLE_FONT)
+        label = tk.Label(self, textvariable=self.id_var, font=TITLE_FONT,background='pink')
         #label.grid(row=0,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
 
-        button = tk.Button(self, text="開始",command=lambda:controller.show_frame("gamepage"), font=BTN_FONT)
+        button = tk.Button(self, text="開始",command=lambda:controller.show_frame("gamepage"), font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=1,columnspan=4)
         button.place(x=400, y=275, anchor=CENTER)
 
-        button = tk.Button(self, text="個人紀錄",command=lambda:controller.show_frame("person"), font=BTN_FONT)
+        button = tk.Button(self, text="個人紀錄",command=lambda:controller.show_frame("person"), font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=1,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
-        button = tk.Button(self, text="排行榜",command=lambda:controller.show_frame("topten"), font=BTN_FONT)
+        button = tk.Button(self, text="排行榜",command=lambda:controller.show_frame("topten"), font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=1,columnspan=4)
         button.place(x=400, y=425, anchor=CENTER)
 
-        button = tk.Button(self, text="登出",command=self.logout, font=BTN_FONT)
+        button = tk.Button(self, text="登出",command=self.logout, font=BTN_FONT,background='lightsalmon')
         #button.grid(row=2,columnspan=4)
         button.place(x=500, y=425, anchor=CENTER)
     def logout(self):
@@ -307,21 +342,21 @@ class gamepage(tk.Frame):
         self.labelbg = tk.Label(self, image = self.photo_image)
         self.labelbg.pack()
 
-        label = tk.Label(self, text="選擇模式", font=TITLE_FONT)
+        label = tk.Label(self, text="選擇模式", font=TITLE_FONT,background='pink')
         #label.grid(row=1,columnspan=4)
-        label.place(x=400, y=250, anchor=CENTER)
-        button = tk.Button(self, text="字母",command=self.goletter, font=BTN_FONT)
+        label.place(x=400, y=200, anchor=CENTER)
+        button = tk.Button(self, text="字母",command=self.goletter, font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=2,columnspan=4)
-        button.place(x=400, y=325, anchor=CENTER)
+        button.place(x=400, y=275, anchor=CENTER)
 
-        button = tk.Button(self, text="單字",command=lambda:controller.show_frame("wordspage"), font=BTN_FONT)
+        button = tk.Button(self, text="單字",command=lambda:controller.show_frame("wordspage"), font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=2,columnspan=4)
-        button.place(x=400, y=400, anchor=CENTER)
+        button.place(x=400, y=350, anchor=CENTER)
 
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"), font=BTN_FONT)
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"), font=BTN_FONT,background='lightsalmon')
         #button.grid(row=2,columnspan=4)
-        button.place(x=500, y=475, anchor=CENTER)
+        button.place(x=500, y=425, anchor=CENTER)
     def goletter(self):
         self.controller.show_frame("letterpage")
         app.frames['letterpage'].run()
@@ -335,25 +370,25 @@ class person(tk.Frame):
         self.labelbg = tk.Label(self, image = self.photo_image)
         self.labelbg.pack()
 
-        label = tk.Label(self, text="個人紀錄", font=TITLE_FONT)
+        label = tk.Label(self, text="個人紀錄", font=TITLE_FONT,background="pink")
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
-        button = tk.Button(self, text="字母",command=self.show_preson_letter, font=BTN_FONT)
+        button = tk.Button(self, text="字母",command=self.show_preson_letter, font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=275, anchor=CENTER)
 
-        button = tk.Button(self, text="單字",command=self.show_preson_word, font=BTN_FONT)
+        button = tk.Button(self, text="單字",command=self.show_preson_word, font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"), font=BTN_FONT)
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"), font=BTN_FONT,background="lightsalmon")
         #button.grid(row=2,columnspan=4)
         button.place(x=500, y=425, anchor=CENTER)
     def show_preson_letter(self):
-        person_record(login_id,1,app.frames['person_letter'].L)
+        person_record(login_id,1,app.frames['person_letter'].T)
         self.controller.show_frame("person_letter")
     def show_preson_word(self):
-        person_record(login_id,2,app.frames['person_word'].L)
+        person_record(login_id,2,app.frames['person_word'].T)
         self.controller.show_frame("person_word")
 
 class person_letter(tk.Frame):
@@ -365,14 +400,17 @@ class person_letter(tk.Frame):
         self.labelbg = tk.Label(self, image = self.photo_image)
         self.labelbg.pack()
 
-        label = tk.Label(self, text="字母，個人紀錄", font=TITLE_FONT)
+        label = tk.Label(self, text="字母，個人紀錄", font=TITLE_FONT,background="pink")
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
 
         self.L=Listbox(self,width=30, height=10, font=Listbox_FONT)
-        self.L.place(x=400, y=300, anchor=CENTER)
+        #self.L.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("person"), font=BTN_FONT)
+        self.T=ttk.Treeview(self)
+        self.T.place(x=400, y=300, anchor=CENTER)
+
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("person"), font=BTN_FONT,background="lightsalmon")
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
@@ -385,14 +423,17 @@ class person_word(tk.Frame):
         self.labelbg = tk.Label(self, image = self.photo_image)
         self.labelbg.pack()
 
-        label = tk.Label(self, text="單字，個人紀錄", font=TITLE_FONT)
+        label = tk.Label(self, text="單字，個人紀錄", font=TITLE_FONT,background="pink")
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
 
-        self.L=Listbox(self,width=30, height=10, font=Listbox_FONT)
-        self.L.place(x=400, y=300, anchor=CENTER)
+        #self.L=Listbox(self,width=30, height=10, font=Listbox_FONT)
+        #self.L.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("person"), font=BTN_FONT)
+        self.T=ttk.Treeview(self)
+        self.T.place(x=400, y=300, anchor=CENTER)
+
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("person"), font=BTN_FONT,background="lightsalmon")
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
@@ -405,25 +446,25 @@ class topten(tk.Frame):
         self.labelbg = tk.Label(self, image = self.photo_image)
         self.labelbg.pack()
 
-        label = tk.Label(self, text="排行榜", font=TITLE_FONT)
+        label = tk.Label(self, text="排行榜", font=TITLE_FONT,background="pink")
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
-        button = tk.Button(self, text="字母",command=self.show_topten_letter, font=BTN_FONT)
+        button = tk.Button(self, text="字母",command=self.show_topten_letter, font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=275, anchor=CENTER)
 
-        button = tk.Button(self, text="單字",command=self.show_topten_word, font=BTN_FONT)
+        button = tk.Button(self, text="單字",command=self.show_topten_word, font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"), font=BTN_FONT)
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("Menu"), font=BTN_FONT,background="lightsalmon")
         #button.grid(row=2,columnspan=4)
         button.place(x=500, y=425, anchor=CENTER)
     def show_topten_letter(self):
-        top_record(1,app.frames['topten_letter'].L)
+        top_record(1,app.frames['topten_letter'].T)
         self.controller.show_frame("topten_letter")
     def show_topten_word(self):
-        top_record(2,app.frames['topten_word'].L)
+        top_record(2,app.frames['topten_word'].T)
         self.controller.show_frame("topten_word")
 
 class topten_letter(tk.Frame):
@@ -435,14 +476,16 @@ class topten_letter(tk.Frame):
         self.labelbg = tk.Label(self, image = self.photo_image)
         self.labelbg.pack()
 
-        label = tk.Label(self, text="排行榜-字母", font=TITLE_FONT)
+        label = tk.Label(self, text="排行榜-字母", font=TITLE_FONT,background="pink")
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
 
         self.L=Listbox(self,width=30, height=10, font=Listbox_FONT)
-        self.L.place(x=400, y=300, anchor=CENTER)
+        #self.L.place(x=400, y=300, anchor=CENTER)
+        self.T=ttk.Treeview(self)
+        self.T.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("topten"), font=BTN_FONT)
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("topten"), font=BTN_FONT,background="lightsalmon")
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
@@ -455,14 +498,16 @@ class topten_word(tk.Frame):
         self.labelbg = tk.Label(self, image = self.photo_image)
         self.labelbg.pack()
 
-        label = tk.Label(self, text="排行榜-單字", font=TITLE_FONT)
+        label = tk.Label(self, text="排行榜-單字", font=TITLE_FONT,background="pink")
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=100, anchor=CENTER)
 
         self.L=Listbox(self,width=30, height=10, font=Listbox_FONT)
-        self.L.place(x=400, y=300, anchor=CENTER)
+        #self.L.place(x=400, y=300, anchor=CENTER)
+        self.T=ttk.Treeview(self)
+        self.T.place(x=400, y=300, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("topten"), font=BTN_FONT)
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("topten"), font=BTN_FONT,background="lightsalmon")
         #button.grid(row=2,columnspan=4)
         button.place(x=600, y=500, anchor=CENTER)
 
@@ -475,17 +520,17 @@ class wordspage(tk.Frame):
         self.labelbg = tk.Label(self, image = self.photo_image)
         self.labelbg.pack()
 
-        label = tk.Label(self, text="選擇字庫", font=TITLE_FONT)
+        label = tk.Label(self, text="選擇字庫", font=TITLE_FONT,background="pink")
         #label.grid(row=1,columnspan=4)
         label.place(x=400, y=200, anchor=CENTER)
-        button = tk.Button(self, text="7000單",command= lambda:self.goword("7000.txt"),font=BTN_FONT)
+        button = tk.Button(self, text="7000單",command= lambda:self.goword("7000.txt"),font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=275, anchor=CENTER)
-        button = tk.Button(self, text="自定",command= lambda:self.goword("words.txt"),font=BTN_FONT)
+        button = tk.Button(self, text="自訂",command= lambda:self.goword("words.txt"),font=BTN_FONT,background="lightblue",foreground="maroon")
         #button.grid(row=2,columnspan=4)
         button.place(x=400, y=350, anchor=CENTER)
 
-        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("gamepage"),font=BTN_FONT)
+        button = tk.Button(self, text="上一頁",command=lambda:controller.show_frame("gamepage"),font=BTN_FONT,background="lightsalmon")
         #button.grid(row=2,columnspan=4)
         button.place(x=500, y=425, anchor=CENTER)
     def goword(self,filename):
@@ -717,7 +762,7 @@ class letterpage(tk.Frame):
             #message2= "Heart:{}".format(heart)
             #text2 = font.render(message2, True, red)
             for event in self.pygame.event.get():
-                print event
+                #print event
                 if event.type == QUIT:
                     self.pygame.quit()
                     exit()
