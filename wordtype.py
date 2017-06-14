@@ -13,10 +13,11 @@ white = (255, 255, 255)
 red =(255,0,0)
 green =(0,255,0)
 blue =(128,128,255)
+lightblue =(100,100,255)
 pygame.init()
 title = "Hello, Pygame!"
 screen = pygame.display.set_mode(size, 0, 32)
-text_file = open("words.txt", "r")
+text_file = open("7000.txt", "r")
 allwords=text_file.readline().rstrip('\n').split(',')
 clock=pygame.time.Clock()
 grade=0
@@ -28,9 +29,9 @@ wpm=0
 positions=[]
 words=[]
 def newposition():
-    a=(-10,random.randint(0,9)*60)
+    a=(-10,random.randint(0,8)*60)
     while a in positions:
-        a=(-10,random.randint(0,9)*60)
+        a=(-10,random.randint(0,8)*60)
     positions.append(a)
     return a
 
@@ -58,7 +59,7 @@ class myThread (threading.Thread):
         while not self.shutdown_flag.is_set():
             #print time.time()
             positions=[]
-            for x in range(1):
+            for x in range(4):
                 words.append(a_word())
             time.sleep(self.counter)
 
@@ -72,7 +73,7 @@ def run():
     pygame.mixer.music.play(-1)
     pygame.display.set_caption(title)
 
-    thread1 = myThread(1, "Thread-1", 2)
+    thread1 = myThread(1, "Thread-1", 8)
     thread1.start()
 
     global grade
@@ -86,17 +87,18 @@ def run():
     FPS=30
     word_input= ""
     start=time.time()
+    dis=1
     while True and heart>0:
         global message
         global text
         global positions
-        input_text= font.render(word_input, True, blue)
+        input_text= font.render(word_input, True, lightblue)
         message= "Grade:{}".format(grade)
         text = font.render(message, True, red)
         heartimg=pygame.image.load("img/{}heart.png".format(heart))
-        keys = pygame.key.get_pressed() 
+        """keys = pygame.key.get_pressed() 
         if keys[K_BACKSPACE]:
-            word_input = word_input[:-1]
+            word_input = word_input[:-1]"""
         for event in pygame.event.get():
             #print event
             if event.type == QUIT:
@@ -110,7 +112,8 @@ def run():
                     thread1.join()
                     exit()
                 elif event.key == K_BACKSPACE:
-                    pass
+                    #pass
+                    word_input = word_input[:-1]
                 elif event.key == K_RETURN:
                     for word in words:
                         if word.word==word_input:
@@ -140,8 +143,10 @@ def run():
                 del words[words.index(word)]
             else:
                 word.draw()
-                word.x+=4
+                word.x+=dis
         clock.tick(FPS)
+        if grade>15:
+            dis=2
         pygame.display.update()
     end = time.time()
     wpm=int(round(grade/(end-start)*60))
@@ -164,7 +169,7 @@ def gameover():
         screen.blit(gameover_text, ((size[0]-gameover_text.get_width())/2, (size[1]-gameover_text.get_height())/2+50))
         pygame.display.update()
         for event in pygame.event.get():
-            if event.type == QUIT:
+            if event.type == QUIT: 
                 exit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:

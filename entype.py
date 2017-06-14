@@ -103,9 +103,9 @@ def run():
             else:
                 balloon.draw()
                 balloon.y-=10
-        if addball>20:
+        if addball>30:
             balls.append(ball())
-            FPS+=5
+            FPS+=2
             addball=0
 
         clock.tick(FPS)
