@@ -739,9 +739,10 @@ class wordpage(tk.Frame):
                         exit()
                     if event.key == K_c:
                         self.run()
+                        running = False
                     if event.key == K_q:
                         #self.pygame.quit()
-                        os.environ['SDL_WINDOWID'] = str(app.frames["gamepage"].winfo_id())
+                        #os.environ['SDL_WINDOWID'] = str(app.frames["gamepage"].winfo_id())
                         running = False
                         self.controller.show_frame("gamepage")
     def run2(self):
@@ -855,9 +856,10 @@ class wordpage(tk.Frame):
                         exit()
                     if event.key == K_c:
                         self.run2()
+                        running = False
                     if event.key == K_q:
                         #self.pygame.quit()
-                        os.environ['SDL_WINDOWID'] = str(app.frames["gamepage"].winfo_id())
+                        #os.environ['SDL_WINDOWID'] = str(app.frames["gamepage"].winfo_id())
                         running = False
                         self.controller.show_frame("gamepage")
 
